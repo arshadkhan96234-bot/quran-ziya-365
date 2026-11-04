@@ -7,118 +7,263 @@
 <style>
 *{box-sizing:border-box}
 body{margin:0;font-family:Arial,sans-serif;background:#f4f7f4;color:#173b2b}
-header{background:#145c3b;color:white;text-align:center;padding:25px 12px}
+header{background:#145c3b;color:white;text-align:center;padding:22px 12px}
 header h1{margin:0;font-size:25px}
 header p{margin:8px 0 0}
 main{max-width:650px;margin:auto;padding:15px}
 .card{background:white;border-radius:13px;padding:17px;margin:13px 0;box-shadow:0 2px 9px #0001}
 h2{font-size:19px;margin-top:0}
 input,select,button{width:100%;padding:12px;margin:7px 0;border:1px solid #bbb;border-radius:8px;font-size:16px}
-button{background:#145c3b;color:white;border:0;font-weight:bold}
+button{background:#145c3b;color:white;border:0;font-weight:bold;cursor:pointer}
 .prayer{display:flex;justify-content:space-between;padding:10px;border-bottom:1px solid #eee}
 .note{font-size:13px;color:#666;line-height:1.5}
 footer{text-align:center;padding:20px;color:#666;font-size:13px}
+.language{background:#e7f1e9;padding:12px;border-radius:10px}
 </style>
 </head>
 <body>
+
 <header>
 <h1>QURAN ZIYA 365</h1>
-<p>कुरआन की रोशनी, हर भाषा में</p>
+<p id="tagline">कुरआन की रोशनी, हर भाषा में</p>
 </header>
 
 <main>
+
+<div class="card language">
+<label id="languageLabel" for="language">अपनी भाषा चुनें</label>
+<select id="language" onchange="changeLanguage()">
+<option value="hi">हिंदी</option>
+<option value="ur">اردو</option>
+<option value="en">English</option>
+<option value="ar">العربية</option>
+</select>
+</div>
+
 <div class="card">
-<h2>नमाज़ का समय</h2>
-<label>शहर का नाम</label>
+<h2 id="prayerTitle">नमाज़ का समय</h2>
+
+<label id="cityLabel" for="city">शहर का नाम</label>
 <input id="city" value="Bengaluru" placeholder="शहर लिखें">
-<label>देश</label>
+
+<label id="countryLabel" for="country">देश</label>
 <input id="country" value="India" placeholder="देश लिखें">
-<label>असर का तरीका</label>
+
+<label id="schoolLabel" for="school">असर का तरीका</label>
 <select id="school">
 <option value="1">हनफ़ी</option>
 <option value="0">शाफ़ई</option>
 </select>
-<button onclick="getPrayerTimes()">नमाज़ का समय देखें</button>
+
+<button id="prayerButton" onclick="getPrayerTimes()">नमाज़ का समय देखें</button>
 <p id="status" class="note">समय देखने के लिए बटन दबाएँ।</p>
 <div id="prayers"></div>
-<p class="note">नमाज़ के समय गणना के आधार पर हैं। अपने स्थानीय मस्जिद के समय से मिलान कर लें।</p>
+<p id="prayerNote" class="note">नमाज़ के समय गणना के आधार पर हैं। अपने स्थानीय मस्जिद के समय से मिलान कर लें।</p>
 </div>
 
 <div class="card">
-<h2>कुरआन शरीफ़</h2>
-<p>114 सूरतें और हिंदी अनुवाद</p>
-<p class="note">यह सुविधा अगले चरण में जोड़ी जाएगी।</p>
+<h2 id="quranTitle">कुरआन शरीफ़</h2>
+<p id="quranDescription">114 सूरतें और अनुवाद</p>
+<p id="quranNote" class="note">कुरआन पढ़ने की सुविधा अगले चरण में जोड़ी जाएगी।</p>
 </div>
 
 <div class="card">
-<h2>हदीस शरीफ़</h2>
-<p>सहीह बुखारी और सहीह मुस्लिम</p>
-<p class="note">यह सुविधा अगले चरण में जोड़ी जाएगी।</p>
+<h2 id="hadithTitle">हदीस शरीफ़</h2>
+<p id="hadithDescription">छह प्रसिद्ध हदीस की किताबें</p>
+<p id="hadithNote" class="note">हदीस पढ़ने की सुविधा अगले चरण में जोड़ी जाएगी।</p>
 </div>
 
 <div class="card">
-<h2>दुआ और तस्बीह</h2>
-<p>रोज़ की दुआएँ और तस्बीह काउंटर</p>
-<p class="note">यह सुविधा अगले चरण में जोड़ी जाएगी।</p>
+<h2 id="duaTitle">दुआ और तस्बीह</h2>
+<p id="duaDescription">रोज़ की दुआएँ और तस्बीह काउंटर</p>
+<p id="duaNote" class="note">यह सुविधा अगले चरण में जोड़ी जाएगी।</p>
 </div>
+
 </main>
 
 <footer>QURAN ZIYA 365</footer>
 
 <script>
+const translations = {
+hi: {
+tagline:"कुरआन की रोशनी, हर भाषा में",
+languageLabel:"अपनी भाषा चुनें",
+prayerTitle:"नमाज़ का समय",
+cityLabel:"शहर का नाम", countryLabel:"देश",
+schoolLabel:"असर का तरीका",
+hanafi:"हनफ़ी", shafai:"शाफ़ई",
+prayerButton:"नमाज़ का समय देखें",
+initial:"समय देखने के लिए बटन दबाएँ।",
+loading:"नमाज़ का समय लाया जा रहा है...",
+error:"समय नहीं मिल पाया। इंटरनेट जाँचकर फिर कोशिश करें।",
+missing:"शहर और देश दोनों लिखें।",
+success:"आज का नमाज़ समय:",
+prayerNote:"नमाज़ के समय गणना के आधार पर हैं। अपने स्थानीय मस्जिद के समय से मिलान कर लें।",
+quranTitle:"कुरआन शरीफ़",
+quranDescription:"114 सूरतें और अनुवाद",
+quranNote:"कुरआन पढ़ने की सुविधा अगले चरण में जोड़ी जाएगी।",
+hadithTitle:"हदीस शरीफ़",
+hadithDescription:"छह प्रसिद्ध हदीस की किताबें",
+hadithNote:"हदीस पढ़ने की सुविधा अगले चरण में जोड़ी जाएगी।",
+duaTitle:"दुआ और तस्बीह",
+duaDescription:"रोज़ की दुआएँ और तस्बीह काउंटर",
+duaNote:"यह सुविधा अगले चरण में जोड़ी जाएगी।",
+prayers:["फ़ज्र","सूर्योदय","ज़ुहर","असर","मग़रिब","इशा"]
+},
+en: {
+tagline:"The light of Quran, in every language",
+languageLabel:"Choose your language",
+prayerTitle:"Prayer Times",
+cityLabel:"City", countryLabel:"Country",
+schoolLabel:"Asr calculation",
+hanafi:"Hanafi", shafai:"Shafi",
+prayerButton:"Show Prayer Times",
+initial:"Press the button to see prayer times.",
+loading:"Loading prayer times...",
+error:"Could not get prayer times. Check your internet and try again.",
+missing:"Please enter both city and country.",
+success:"Today's prayer times:",
+prayerNote:"Prayer times are calculated. Please compare with your local mosque.",
+quranTitle:"The Holy Quran",
+quranDescription:"114 Surahs and translations",
+quranNote:"Quran reading will be added in the next stage.",
+hadithTitle:"Hadith",
+hadithDescription:"Six famous Hadith collections",
+hadithNote:"Hadith reading will be added in the next stage.",
+duaTitle:"Duas and Tasbih",
+duaDescription:"Daily duas and Tasbih counter",
+duaNote:"This feature will be added in the next stage.",
+prayers:["Fajr","Sunrise","Dhuhr","Asr","Maghrib","Isha"]
+},
+ur: {
+tagline:"قرآن کی روشنی، ہر زبان میں",
+languageLabel:"اپنی زبان منتخب کریں",
+prayerTitle:"نماز کے اوقات",
+cityLabel:"شہر کا نام", countryLabel:"ملک",
+schoolLabel:"عصر کا طریقہ",
+hanafi:"حنفی", shafai:"شافعی",
+prayerButton:"نماز کے اوقات دیکھیں",
+initial:"اوقات دیکھنے کے لیے بٹن دبائیں۔",
+loading:"نماز کے اوقات حاصل کیے جا رہے ہیں...",
+error:"اوقات نہیں مل سکے۔ انٹرنیٹ چیک کرکے دوبارہ کوشش کریں۔",
+missing:"شہر اور ملک دونوں لکھیں۔",
+success:"آج کے نماز کے اوقات:",
+prayerNote:"اوقات حساب کے مطابق ہیں۔ اپنی مقامی مسجد سے ملان کرلیں۔",
+quranTitle:"قرآن شریف",
+quranDescription:"114 سورتیں اور تراجم",
+quranNote:"قرآن پڑھنے کی سہولت اگلے مرحلے میں شامل ہوگی۔",
+hadithTitle:"حدیث شریف",
+hadithDescription:"حدیث کی چھ مشہور کتابیں",
+hadithNote:"حدیث پڑھنے کی سہولت اگلے مرحلے میں شامل ہوگی۔",
+duaTitle:"دعائیں اور تسبیح",
+duaDescription:"روزانہ کی دعائیں اور تسبیح کاؤنٹر",
+duaNote:"یہ سہولت اگلے مرحلے میں شامل ہوگی۔",
+prayers:["فجر","طلوع آفتاب","ظہر","عصر","مغرب","عشاء"]
+},
+ar: {
+tagline:"نور القرآن، بكل اللغات",
+languageLabel:"اختر لغتك",
+prayerTitle:"مواقيت الصلاة",
+cityLabel:"اسم المدينة", countryLabel:"الدولة",
+schoolLabel:"طريقة حساب العصر",
+hanafi:"حنفي", shafai:"شافعي",
+prayerButton:"اعرض مواقيت الصلاة",
+initial:"اضغط على الزر لعرض مواقيت الصلاة.",
+loading:"جارٍ تحميل مواقيت الصلاة...",
+error:"تعذر الحصول على المواقيت. تحقق من الإنترنت وحاول مرة أخرى.",
+missing:"يرجى كتابة المدينة والدولة.",
+success:"مواقيت الصلاة اليوم:",
+prayerNote:"المواقيت محسوبة. يرجى مقارنتها بمواقيت المسجد المحلي.",
+quranTitle:"القرآن الكريم",
+quranDescription:"114 سورة وترجمات",
+quranNote:"ستضاف خدمة قراءة القرآن في المرحلة القادمة.",
+hadithTitle:"الحديث الشريف",
+hadithDescription:"ستة من أشهر كتب الحديث",
+hadithNote:"ستضاف خدمة قراءة الحديث في المرحلة القادمة.",
+duaTitle:"الأدعية والتسبيح",
+duaDescription:"أدعية يومية وعداد التسبيح",
+duaNote:"ستضاف هذه الميزة في المرحلة القادمة.",
+prayers:["الفجر","الشروق","الظهر","العصر","المغرب","العشاء"]
+}
+};
+
+let currentLanguage = "hi";
+
+function changeLanguage(){
+ currentLanguage = document.getElementById("language").value;
+ const t = translations[currentLanguage];
+ const rtl = currentLanguage === "ar" || currentLanguage === "ur";
+
+ document.documentElement.lang = currentLanguage;
+ document.documentElement.dir = rtl ? "rtl" : "ltr";
+ document.body.style.direction = rtl ? "rtl" : "ltr";
+
+ Object.keys(t).forEach(key=>{
+  if(document.getElementById(key)){
+   document.getElementById(key).textContent = t[key];
+  }
+ });
+
+ document.getElementById("school").options[0].text = t.hanafi;
+ document.getElementById("school").options[1].text = t.shafai;
+ document.getElementById("status").textContent = t.initial;
+
+ if(window.lastPrayerData){
+  showPrayerTimes(window.lastPrayerData);
+ }
+}
+
+function showPrayerTimes(timings){
+ const t = translations[currentLanguage];
+ const keys = ["Fajr","Sunrise","Dhuhr","Asr","Maghrib","Isha"];
+ document.getElementById("prayers").innerHTML = keys.map((key,i)=>
+  '<div class="prayer"><span>'+t.prayers[i]+'</span><strong>'+timings[key]+'</strong></div>'
+ ).join("");
+}
+
 async function getPrayerTimes(){
- const city=document.getElementById("city").value.trim();
- const country=document.getElementById("country").value.trim();
- const school=document.getElementById("school").value;
- const status=document.getElementById("status");
- const output=document.getElementById("prayers");
+ const t = translations[currentLanguage];
+ const city = document.getElementById("city").value.trim();
+ const country = document.getElementById("country").value.trim();
+ const school = document.getElementById("school").value;
+ const status = document.getElementById("status");
+ const output = document.getElementById("prayers");
 
  if(!city || !country){
-  status.textContent="शहर और देश दोनों लिखें।";
+  status.textContent = t.missing;
   return;
  }
 
- status.textContent="नमाज़ का समय लाया जा रहा है...";
- output.innerHTML="";
+ status.textContent = t.loading;
+ output.innerHTML = "";
 
- const d=new Date();
- const date=[
+ const d = new Date();
+ const date = [
   String(d.getDate()).padStart(2,"0"),
   String(d.getMonth()+1).padStart(2,"0"),
   d.getFullYear()
  ].join("-");
 
- const url="https://api.aladhan.com/v1/timingsByCity/"+date+
+ const url = "https://api.aladhan.com/v1/timingsByCity/"+date+
  "?city="+encodeURIComponent(city)+
  "&country="+encodeURIComponent(country)+
  "&method=1&school="+school;
 
  try{
-  const response=await fetch(url);
-  const result=await response.json();
+  const response = await fetch(url);
+  const result = await response.json();
 
-  if(result.code!==200) throw new Error("समय नहीं मिला");
+  if(result.code !== 200) throw new Error("Time not found");
 
-  const t=result.data.timings;
-  const names=[
-   ["फ़ज्र","Fajr"],
-   ["सूर्योदय","Sunrise"],
-   ["ज़ुहर","Dhuhr"],
-   ["असर","Asr"],
-   ["मग़रिब","Maghrib"],
-   ["इशा","Isha"]
-  ];
-
-  output.innerHTML=names.map(item=>
-   '<div class="prayer"><span>'+item[0]+
-   '</span><strong>'+t[item[1]]+'</strong></div>'
-  ).join("");
-
-  status.textContent="आज का नमाज़ समय: "+city+", "+country;
+  window.lastPrayerData = result.data.timings;
+  showPrayerTimes(window.lastPrayerData);
+  status.textContent = t.success+" "+city+", "+country;
  }catch(error){
-  status.textContent="समय नहीं मिल पाया। इंटरनेट जाँचकर फिर कोशिश करें।";
+  status.textContent = t.error;
  }
 }
+
+changeLanguage();
 </script>
 </body>
 </html>
